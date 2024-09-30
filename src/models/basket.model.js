@@ -9,7 +9,7 @@ var Basket = function (user) {
 };
 
 Basket.getCustomerBasket = (req, result) => {
-    dbConn.query('SELECT basket_id, customer_id, purchased_product, quantity, purchase_date, total_amount, payment_method FROM erpapi.tblbasketinfo where basket_id = ?', [req.params.basket_id], (err, res) => {
+    dbConn.query('SELECT basket_id, customer_id, product, quantity, purchase_date, total_amount, payment_method FROM erpapi.tblbasketinfo where basket_id = ?', [req.params.basket_id], (err, res) => {
         if (err) {
             console.log('Error while getting basket information' + err);
             result(null, err);
@@ -20,6 +20,30 @@ Basket.getCustomerBasket = (req, result) => {
     });
 }
 
+Basket.getCustomerSpecials = (req, result) => {
+    dbConn.query('SELECT uid, product, special, specialAmount, specialValue, specialType, startDate, expiryDate FROM erpapi.tblspecials where product = ?', [req.params.product], (err, res) => {
+        if (err) {
+            console.log('Error while checking the product specials for the purchased item' + err);
+            result(null, err);
+        } else {
+            console.log('Successfully retrieved the special using the basket infomation', res);
+            result(null, res);
+        }
+    });
+}
+
+Basket.saveClientsTransaction = (req, result) => {
+    const { basket_id, customer_id, product, quantity, product_price, discount_applied, final_price, insertion_time } = req.body;
+    dbConn.query('INSERT INTO erpapi.basketinfo_items (basket_id, customer_id, product, quantity, product_price, discount_applied, final_price, insertion_time)VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [basket_id, customer_id, product, quantity, product_price, discount_applied, final_price, insertion_time], (err, res) => {
+        if (err) {
+            console.log('Error while checking the product specials for the purchased item' + err);
+            result(null, err);
+        } else {
+            console.log('Successfully retrieved the special using the basket infomation', res);
+            result(null, res);
+        }
+    });
+}
 
 module.exports = Basket;
 
