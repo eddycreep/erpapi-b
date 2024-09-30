@@ -11,7 +11,7 @@ router.post('/insertauditlog', UserController.InsertAuditLog);
 router.post('/login', (req, res) => {
   console.log(req.body)
   dbConn.query(
-    `SELECT * FROM user WHERE username = ${dbConn.escape(req.body.username)} and password = ${dbConn.escape(req.body.password)};`,
+    `SELECT * FROM erpapi.user WHERE username = ${dbConn.escape(req.body.username)} and password = ${dbConn.escape(req.body.password)};`,
     (err, result) => {
       // user does not exists
       if (err) {
