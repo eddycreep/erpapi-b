@@ -9,7 +9,7 @@ var Basket = function (user) {
 };
 
 Basket.getCustomerBasket = (req, result) => {
-    dbConn.query('SELECT basket_id, customer_id, product, quantity, purchase_date, total_amount, payment_method FROM erpapi.tblbasketinfo where basket_id = ?', [req.params.basket_id], (err, res) => {
+    dbConn.query('SELECT basket_id, customer_id, total_amount, purchase_date FROM tblbasketinfo WHERE basket_id = ?', [req.params.basket_id], (err, res) => {
         if (err) {
             console.log('Error while getting basket information' + err);
             result(null, err);
@@ -20,8 +20,45 @@ Basket.getCustomerBasket = (req, result) => {
     });
 }
 
-Basket.getCustomerSpecials = (req, result) => {
-    dbConn.query('SELECT uid, product, special, specialAmount, specialValue, specialType, startDate, expiryDate FROM erpapi.tblspecials where product = ?', [req.params.product], (err, res) => {
+Basket.getCustomerBasketItems = (req, result) => {
+    dbConn.query('SELECT product, quantity, product_price, basket_id FROM erpapi.tblbasketinfo_items WHERE basket_id = ?', [req.params.basket_id], (err, res) => {
+        if (err) {
+            console.log('Error while getting basket information' + err);
+            result(null, err);
+        } else {
+            console.log('Successfully retrieved the customers basket information', res);
+            result(null, res);
+        }
+    });
+}
+
+
+Basket.checkLoyaltyCustomer = (req, result) => {
+    dbConn.query('SELECT customer_id, loyalty_tier FROM erpapi.tblloyaltycustomers WHERE customer_id = ?', [req.params.customer_id], (err, res) => {
+        if (err) {
+            console.log('Error while checking if the customer is apart of the loyalty program' + err);
+            result(null, err);
+        } else {
+            console.log('The Customer is apart of the loyalty program', res);
+            result(null, res);
+        }
+    });
+}
+
+Basket.getProductDetails = (req, result) => {
+    dbConn.query(`SELECT inv.item_code, COALESCE(NULLIF(inv.description_1, ''), inv.description_2) AS description, mst.selling_incl_1, mst.special_price_incl FROM erpapi.tblinventory inv JOIN erpapi.tblmultistoretrn mst ON inv.item_code = mst.item_code WHERE inv.item_code = ?`, [req.params.item_code], (err, res) => {
+        if (err) {
+            console.log('Error while getting the product details using the item_code' + err);
+            result(null, err);
+        } else {
+            console.log('Successfully retrieved the product details using the item_code', res);
+            result(null, res);
+        }
+    });
+}
+
+Basket.getProductSpecials = (req, result) => {
+    dbConn.query('SELECT erpapi.tblspecialitems.special_id, erpapi.tblspecialitems.item_code, erpapi.tblspecials.product_description, erpapi.tblspecials.special, erpapi.tblspecials.special_price, erpapi.tblspecials.special_value, erpapi.tblspecials.special_type, erpapi.tblspecials.start_date, erpapi.tblspecials.expiry_date FROM erpapi.tblspecialitems INNER JOIN erpapi.tblspecials ON erpapi.tblspecialitems.special_id = erpapi.tblspecials.special_id WHERE start_date <= CURDATE() AND expiry_date >= CURDATE() AND erpapi.tblspecials.product_description = ?', [req.params.product_description], (err, res) => {
         if (err) {
             console.log('Error while checking the product specials for the purchased item' + err);
             result(null, err);
