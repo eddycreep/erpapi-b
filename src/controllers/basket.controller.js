@@ -12,9 +12,18 @@ exports.getCustomerBasket = (req, res) => {
   });
 };
 
+exports.getCustomerBasketItems = (req, res) => {
+  BasketModel.getCustomerBasketItems (req, (err, basket) => {
+    if (err) {
+      res.status(500).json({ error: err });
+      return;
+    }
+    res.send(basket);
+  });
+};
 
-exports.determineLoyaltyCustomer = (req, res) => {
-  BasketModel.determineLoyaltyCustomer(req, (err, customer) => {
+exports.checkLoyaltyCustomer = (req, res) => {
+  BasketModel.checkLoyaltyCustomer(req, (err, customer) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
@@ -35,9 +44,9 @@ exports.getProductDetails = (req, res) => {
 };
 
 
-exports.getCustomerSpecials = (req, res) => {
+exports.getProductSpecials = (req, res) => {
   // Pass the `req` object to access `req.params.basket_id` in the model
-  BasketModel.getCustomerSpecials(req, (err, basket) => {
+  BasketModel.getProductSpecials(req, (err, basket) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
