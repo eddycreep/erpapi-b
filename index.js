@@ -25,10 +25,6 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // setup the server port
 const port = process.env.SERVERPORT;
 
-app.use('/', (req, res) => {
-    res.send('Hello, world!')
-})
-
 const UserRoutes = require('./src/routes/user.route')
 app.use('/user', UserRoutes);
 
