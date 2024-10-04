@@ -2,7 +2,9 @@ const BasketModel = require('../models/basket.model');
 
 exports.getCustomerBasket = (req, res) => {
   // Pass the `req` object to access `req.params.basket_id` in the model
-  BasketModel.getCustomerBasket(req, (err, basket) => {
+  const basketId = req.params.basket_id;
+
+  BasketModel.getCustomerBasket(basketId, (err, basket) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
