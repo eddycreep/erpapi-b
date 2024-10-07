@@ -13,6 +13,8 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 //getProductDetails - apply discounts - save transaction
 router.get('/getproductdetails/:item_code', BasketController.getProductDetails); //getProductDetails
 router.get('/getproductspecial/:product_description', BasketController.getProductSpecials); //getSpecial using the product name
+//router.post('/sendiscountedproducts', BasketController.sendDiscountedProducts); //send back the discounted products
+
 router.post('/saveclientransaction', BasketController.saveClientsTransaction); //save the client transaction with the applied amounts
 
 module.exports = router;

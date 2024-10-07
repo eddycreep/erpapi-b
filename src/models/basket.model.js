@@ -1,5 +1,6 @@
 var dbConn = require("../../config/db.config");
 const EventEmitter = require('events');
+const { getProductSpecials } = require("../controllers/basket.controller");
 
 const event = new EventEmitter();
 
@@ -259,10 +260,15 @@ Basket.getCustomerBasketItems = (basketid, result) => {
 };
 
 Basket.checkLoyaltyCustomer = (customerId, result) => {
+    console.log("Checking loyalty for customer with ID:", customerId);
+
         dbConn.query('SELECT customer_id, loyalty_tier FROM erpapi.tblloyaltycustomers WHERE customer_id = ?', [customerId], (err, res) => {
             if (err) {
                 //console.log('Error while checking if the customer is apart of the loyalty program' + err);
                 result(null, err);
+            } else if (res.length === 0) {
+                console.log('No customer found with the provided ID.');
+                result(null, null);  // No customer found
             } else {
                 //console.log('The Customer is apart of the loyalty program', res);
                 result(null, res);
@@ -294,6 +300,18 @@ Basket.getProductSpecials = (product, result) => {
         });
 }
 
+Basket.sendDiscountedProducts = () => {
+    dbConn.query('INSERT INTO erpapi.tblcompletetransaction(basket_id, customer_id, purchased_product, quantity, product_amount, product_discounted_amount, total_basket_amount, total_disc_basket_amount, purchase_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate], (err, res) => {
+        if (err) {
+            //console.log('Error while checking the product specials for the purchased item' + err);
+            result(null, err);
+        } else {
+            //console.log('Successfully retrieved the special using the basket infomation', res);
+            result(null, res);
+        }
+    });
+}
+
 Basket.saveClientsTransaction = (basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate, result) => {
         dbConn.query('INSERT INTO erpapi.tblcompletetransaction(basket_id, customer_id, purchased_product, quantity, product_amount, product_discounted_amount, total_basket_amount, total_disc_basket_amount, purchase_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate], (err, res) => {
             if (err) {
@@ -306,8 +324,7 @@ Basket.saveClientsTransaction = (basketid, customerid, product, quantity, sellin
         });
 }
 
-//event.emit('get-customer-basket', 1)
-event.emit('get-customer-basket')
+event.emit('get-customer-basket', 4)
 
 
 module.exports = Basket;
