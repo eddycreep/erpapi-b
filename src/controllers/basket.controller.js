@@ -12,25 +12,6 @@ exports.getCustomerBasket = (req, res) => {
   });
 };
 
-exports.getCustomerBasketItems = (req, res) => {
-  BasketModel.getCustomerBasketItems (req, (err, basket) => {
-    if (err) {
-      res.status(500).json({ error: err });
-      return;
-    }
-    res.send(basket);
-  });
-};
-
-// exports.checkLoyaltyCustomer = (req, res) => {
-//   BasketModel.checkLoyaltyCustomer(req, (err, customer) => {
-//     if (err) {
-//       res.status(500).json({ error: err });
-//       return;
-//     }
-//     res.send(customer);
-//   });
-// };
 exports.checkLoyaltyCustomer = (req, res) => {
   BasketModel.checkLoyaltyCustomer(req, (err, customer) => {
     if (err) {
@@ -48,19 +29,18 @@ exports.checkLoyaltyCustomer = (req, res) => {
   });
 };
 
-
-exports.getProductDetails = (req, res) => {
-  BasketModel.getProductDetails(req, (err, customer) => {
+exports.getProductPrices = (req, res) => {
+  BasketModel.getProductPrices(req, (err, product) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
     }
-    res.send(customer);
+    //res.status(200).json
+    res.send(product);
   });
 };
 
 exports.getProductSpecials = (req, res) => {
-  // Pass the `req` object to access `req.params.basket_id` in the model
   BasketModel.getProductSpecials(req, (err, basket) => {
     if (err) {
       res.status(500).json({ error: err });
@@ -71,8 +51,19 @@ exports.getProductSpecials = (req, res) => {
   });
 };
 
-exports.sendDiscountedProducts = (req, res) => {
-  BasketModel.sendDiscountedProducts(req, (err, client) => {
+exports.getProductGroupSpecials = (req, res) => {
+  BasketModel.getProductGroupSpecials(req, (err, basket) => {
+    if (err) {
+      res.status(500).json({ error: err });
+      return;
+    }
+    //res.status(200).json
+    res.send(basket);
+  });
+};
+
+exports.saveBasketInfoItems = (req, res) => {
+  BasketModel.saveBasketInfoItems(req, (err, client) => {
     if (err) {
       client.message = "Failed";
       res.send(err);
@@ -83,8 +74,8 @@ exports.sendDiscountedProducts = (req, res) => {
   })
 }
 
-exports.saveClientsTransaction = (req, res) => {
-  BasketModel.saveClientsTransaction(req, (err, client) => {
+exports.saveFinalTransaction = (req, res) => {
+  BasketModel.saveFinalTransaction(req, (err, client) => {
     if (err) {
       client.message = "Failed";
       res.send(err);
