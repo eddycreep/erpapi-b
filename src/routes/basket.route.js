@@ -5,16 +5,16 @@ const BasketController = require('../controllers/basket.controller');
 
 require('dotenv').config({ path: './configuration.env' });
 
-//getBasket information
-router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); //getBasketInfo
-router.get('/getbasketitems/:basket_id', BasketController.getCustomerBasketItems); //getBasketInfo
-router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer); //checkLoyaltyCustomers
+//get-basket information || check-if-on-loyalty || get-product-prices 
+router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); 
+router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer); 
+router.get('/getproductprices/:product_description', BasketController.getProductPrices);
 
-//getProductDetails - apply discounts - save transaction
-router.get('/getproductdetails/:item_code', BasketController.getProductDetails); //getProductDetails
-router.get('/getproductspecial/:product_description', BasketController.getProductSpecials); //getSpecial using the product name
-//router.post('/sendiscountedproducts', BasketController.sendDiscountedProducts); //send back the discounted products
+//get-product-specials
+router.get('/getproductspecial/:product_description', BasketController.getProductSpecials); 
+router.get('/getproductgroupspecial/:product_description', BasketController.getProductGroupSpecials); 
 
-router.post('/saveclientransaction', BasketController.saveClientsTransaction); //save the client transaction with the applied amounts
+router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems); 
+router.post('/savefinaltransaction', BasketController.saveFinalTransaction); 
 
 module.exports = router;
